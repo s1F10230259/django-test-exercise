@@ -117,3 +117,11 @@ class TodoViewTestCase(TestCase):
         task1.refresh_from_db()
         self.assertTrue(task1.completed)
         self.assertRedirects(response, reverse('index'))
+
+    def test_delete(self):
+        task1 = Task(title = 'task1', due_at = timezone.make_aware(datetime(2024, 7, 1)))
+        task1.save()
+        client = Client()
+        response = client.post(reverse('close', args=[task1.id]))
+        
+        self.assertRedirects(response, reverse('index'))
