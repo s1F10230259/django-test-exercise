@@ -30,4 +30,10 @@ type="datetime-local" value="{{ task.due_at
 </div>
 </form>
 <br>
+<form action="{% url 'copy' task.id %}" method="post">
+{% csrf_token %}
+<button type="submit">Copy this task</button>
+</form>
 </body>
+
+</html>
