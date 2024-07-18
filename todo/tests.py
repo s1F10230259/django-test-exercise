@@ -1,7 +1,9 @@
 from django.test import TestCase, Client
+from django.urls import reverse
 from django.utils import timezone
 from datetime import datetime
 from todo.models import Task
+from todo.views import close
 # Create your tests here.
 
 
@@ -106,3 +108,12 @@ class TodoViewTestCase(TestCase):
         response = client.get('/1/')
 
         self.assertEqual(response.status_code, 404)
+
+    def test_close_test(self):
+        task1 = Task(title = 'task1', due_at = timezone.make_aware(datetime(2024, 7, 1)))
+        task1.save()
+        client = Client()
+        response = client.post(reverse('close', args=[task1.id]))
+        task1.refresh_from_db()
+        self.assertTrue(task1.completed)
+        self.assertRedirects(response, reverse('index'))
