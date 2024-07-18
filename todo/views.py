@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
 from django.utils.timezone import make_aware
 from django.utils.dateparse import parse_datetime
@@ -64,3 +64,12 @@ def delete(request, task_id):
         raise Http404('Task does not exist')
     task.delete()
     return redirect(index)
+
+def copy(request, task_id):
+    original_task = get_object_or_404(Task, pk=task_id)
+    new_task = Task(
+        title=f"Copy of {original_task.title}",
+        due_at=original_task.due_at
+    )
+    new_task.save()
+    return redirect('index')
