@@ -29,6 +29,20 @@
       | <a href="{% url 'delete' task.id %}">Delete</a>
       | <a href="{% url 'copy' task.id %}">Copy</a>
     </div>
+
+    <h2>Comments</h2>
+    <ul>
+      {% for comment in comments %}
+        <li>{{ comment.text }} - {{ comment.created_at }}</li>
+      {% endfor %}
+    </ul>
+
+    <h2>Add a Comment</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Add Comment</button>
+    </form>
   </body>
 
 </html>
