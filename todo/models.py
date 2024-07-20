@@ -13,3 +13,11 @@ class Task(models.Model):
         if self.due_at is None:
             return False
         return self.due_at < dt
+
+class Comment(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='comments')
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.text[:20]  # 最初の20文字を表示

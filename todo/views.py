@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
 from django.utils.timezone import make_aware
 from django.utils.dateparse import parse_datetime
-from todo.models import Task
+from todo.models import Task, Comment
+from .forms import CommentForm
 # Create your views here.
 
 
@@ -73,3 +74,23 @@ def copy(request, task_id):
     )
     new_task.save()
     return redirect('index')
+
+def detail(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+    comments = task.comments.all()
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.task = task
+            comment.save()
+            return redirect('detail', task_id=task.id)
+    else:
+        form = CommentForm()
+    
+    context = {
+        'task': task,
+        'comments': comments,
+        'form': form
+    }
+    return render(request, 'todo/detail.html', context)
